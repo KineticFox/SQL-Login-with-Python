@@ -60,8 +60,8 @@ def Login(event=None):
 			lb_text.config(text="Invalid Password or Username", fg="red")
 			USERNAME.set("")
 			PASSWORD.set("")
-	cursor.close()
-	con.close()
+	#cursor.close()
+	#con.close()
 
 bt_login = Button(Form, text="Login", width=45, command=Login)
 bt_login.grid(pady=25, row=3, columnspan=2)
@@ -84,6 +84,8 @@ def Database():
 def Back():
 	Home.destroy()
 	root.deiconify()
+	cursor.close()
+	con.close()
 
 def HomeWindow():
 	global Home
@@ -140,7 +142,22 @@ def HomeWindow():
 	bt_back = Button(Form1, text="Back", command=Back)
 	bt_back.grid(pady=25, row=4,columnspan=1)
 
-	
+	def Remove():
+		if USERNAME1.get() == "":
+			lb_text1.config(text="can't find empty User", fg="orange")
+		else:
+			cursor.execute("SELECT * FROM `member` WHERE `username` = ?", (USERNAME1.get(),))
+			if cursor.fetchone() is not None :
+				cursor.execute("DELETE FROM `member` WHERE `username` = ?", (USERNAME1.get(),))
+				con.commit()
+				USERNAME1.set("")
+				lb_text1.config(text="User deleted", fg="green")
+
+			else:
+				lb_text1.config(text="User doesn't exist", fg="red")
+
+	bt_remove = Button(Form1, text="Remove", command=Remove)
+	bt_remove.grid(pady=25, row=5, columnspan=1)
 
 
 
