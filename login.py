@@ -92,13 +92,13 @@ def HomeWindow():
 	root.withdraw()
 	Home = Toplevel()
 	Home.title("test Application")
-	width = 500
+	width = 640
 	height = 500
 	screen_width = root.winfo_screenwidth()
 	screen_height = root.winfo_screenheight()
 	x = (screen_width/2) - (width/2)
 	y = (screen_height/2) - (height/2)
-	root.resizable(0, 0)
+	Home.resizable(0, 0)
 	Top1 = Frame(Home, bd=2,  relief=RIDGE)
 	Top1.pack(side=TOP, fill=X)
 	Form1 = Frame(Home, height=200)
@@ -139,8 +139,8 @@ def HomeWindow():
 
 	bt_create = Button(Form1, text="Create User", width=45, command=Create)
 	bt_create.grid(pady=25, row=3, columnspan=2)
-	bt_back = Button(Form1, text="Back", command=Back)
-	bt_back.grid(pady=25, row=4,columnspan=1)
+	bt_back = Button(Form1, text="Logout", command=Back)
+	bt_back.grid(pady=25,padx=10, row=4,columnspan=1)
 
 	def Remove():
 		if USERNAME1.get() == "":
@@ -157,7 +157,26 @@ def HomeWindow():
 				lb_text1.config(text="User doesn't exist", fg="red")
 
 	bt_remove = Button(Form1, text="Remove", command=Remove)
-	bt_remove.grid(pady=25, row=5, columnspan=1)
+	bt_remove.grid(pady=25, padx=10,row=4, column=1 ,columnspan=1)
+
+	
+
+	def Change():
+		if USERNAME1.get() == "":
+			lb_text1.config(text="can't find empty User", fg="orange")
+		else:
+			cursor.execute("SELECT * FROM `member` WHERE `username` = ?", (USERNAME1.get(),))
+			if cursor.fetchone() is not None:
+				pwcc = hashlib.sha256(bytes(PASSWORD1.get(),"utf-8"))
+				cursor.execute("UPDATE `member` SET `password` = ?",(pwcc.hexdigest(),))
+				con.commit()
+				PASSWORD1.set("")
+				lb_text1.config(text="changed Password", fg="green")
+			else:
+				lb_text1.config(text="User doesn't exist", fg="red")
+
+	bt_change = Button(Form1, text="Change PW", command=Change)
+	bt_change.grid(pady=25, padx = 10, row=4, column=2 ,columnspan=1)
 
 
 
